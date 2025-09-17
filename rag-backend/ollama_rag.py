@@ -108,62 +108,22 @@ class OllamaRAGHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(knowledge).encode())
     
     def handle_home(self):
-        """Serve API documentation."""
+        """Serve simple API documentation."""
         html = """
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Qbit RAG Backend - Ollama Powered</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-                .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                h1 { color: #2196F3; }
-                .endpoint { background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; }
-                .method { color: #28a745; font-weight: bold; }
-                .path { color: #007bff; }
-                .status { background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 5px 0; }
-            </style>
+            <title>Qbit RAG Backend API</title>
         </head>
         <body>
-            <div class="container">
-                <h1>🤖 Qbit RAG Backend - Ollama Powered</h1>
-                
-                <div class="status">✅ Status: Running with Real AI</div>
-                <div class="status">🧠 AI: Llama 3.1 8B via Ollama</div>
-                <div class="status">💰 Cost: $0 (Completely Free)</div>
-                
-                <h2>🔗 Available Endpoints:</h2>
-                
-                <div class="endpoint">
-                    <span class="method">GET</span> <span class="path">/health</span><br>
-                    Health check and system status
-                </div>
-                
-                <div class="endpoint">
-                    <span class="method">POST</span> <span class="path">/api/chat</span><br>
-                    Chat with AI assistant (powered by Llama 3.1)
-                </div>
-                
-                <div class="endpoint">
-                    <span class="method">GET</span> <span class="path">/api/knowledge</span><br>
-                    Get knowledge base information
-                </div>
-                
-                <h2>🎯 Test with Real AI:</h2>
-                <ul>
-                    <li>What is my total annual leave number?</li>
-                    <li>Can I work from home 5 days a week?</li>
-                    <li>How much does the company pay for health insurance?</li>
-                    <li>What's the process for getting IT support?</li>
-                    <li>Do I have any active tickets?</li>
-                    <li>What's the status of my IT ticket?</li>
-                </ul>
-                
-                <h2>🔧 Test with curl:</h2>
-                <pre>curl -X POST http://localhost:8080/api/chat \\
-  -H "Content-Type: application/json" \\
-  -d '{"message": "What is my total annual leave number?"}'</pre>
-            </div>
+            <h1>Qbit RAG Backend API</h1>
+            
+            <h2>Available Endpoints:</h2>
+            
+            <p><strong>GET</strong> /health - Health check and system status</p>
+            <p><strong>POST</strong> /api/chat - Chat with AI assistant</p>
+            <p><strong>GET</strong> /api/knowledge - Get knowledge base information</p>
+            
         </body>
         </html>
         """
@@ -289,16 +249,16 @@ class OllamaRAGHandler(BaseHTTPRequestHandler):
             # Create prompt for Llama 3.1
             prompt = f"""You are a helpful AI assistant for Qbit company employees. Answer questions concisely and directly.
 
-User Question: {query}
-{context}
+            User Question: {query}
+            {context}
 
-Instructions:
-- Give direct, specific answers
-- Keep responses under 2-3 sentences when possible
-- Lead with the key information (numbers, dates, etc.)
-- Be friendly but brief
+            Instructions:
+            - Give direct, specific answers
+            - Keep responses under 2-3 sentences when possible
+            - Lead with the key information (numbers, dates, etc.)
+            - Be friendly but brief
 
-Response:"""
+            Response:"""
             
             # Call Ollama API
             ollama_response = requests.post(

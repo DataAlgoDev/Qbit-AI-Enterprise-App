@@ -866,19 +866,3 @@ Use this exact format. No extra introductory text.""";
   }
 
 }
-
-// class Goal {
-//   final String title;
-//   final String description;
-//   final double progress;
-//   final String category;
-//   final DateTime dueDate;
-//
-//   Goal({
-//     required this.title,
-//     required this.description,
-//     required this.progress,
-//     required this.category,
-//     required this.dueDate,
-//   });
-// }
