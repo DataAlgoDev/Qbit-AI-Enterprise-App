@@ -75,6 +75,8 @@ class OllamaRAGHandler(BaseHTTPRequestHandler):
         
         if parsed_path.path == '/api/chat':
             self.handle_chat()
+        elif parsed_path.path == '/api/newsletters':
+            self.handle_newsletters()
         else:
             self.send_error(404, "Not Found")
     
@@ -123,6 +125,7 @@ class OllamaRAGHandler(BaseHTTPRequestHandler):
             <p><strong>GET</strong> /health - Health check and system status</p>
             <p><strong>POST</strong> /api/chat - Chat with AI assistant</p>
             <p><strong>GET</strong> /api/knowledge - Get knowledge base information</p>
+            <p><strong>POST</strong> /api/newsletters - Generate AI-powered newsletters</p>
             
         </body>
         </html>
@@ -179,6 +182,191 @@ class OllamaRAGHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps(error_response).encode())
     
+    def handle_newsletters(self):
+        """Generate AI-powered newsletters."""
+        try:
+            # Read request body
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            request_data = json.loads(post_data.decode('utf-8'))
+            
+            count = request_data.get('count', 2)  # Default to 2 newsletters
+            
+            # Generate newsletters using Ollama
+            newsletters = self.generate_newsletters(count)
+            
+            response = {
+                "newsletters": newsletters,
+                "generated_at": "2025-09-17T18:57:00Z",
+                "ai_model": "Llama 3.1 8B (Ollama)"
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode())
+            
+        except Exception as e:
+            print(f"Error in newsletter handler: {e}")
+            # Return fallback newsletters
+            fallback_newsletters = [
+                {
+                    "title": "AI & Machine Learning Updates",
+                    "description": "Stay updated with the latest trends in artificial intelligence and machine learning technologies.",
+                    "category": "AI & Technology"
+                },
+                {
+                    "title": "Software Engineering Best Practices",
+                    "description": "Explore modern software development methodologies and engineering practices.",
+                    "category": "Software Engineering"
+                }
+            ]
+            
+            error_response = {
+                "newsletters": fallback_newsletters,
+                "generated_at": "2025-09-17T18:57:00Z",
+                "error": "AI generation failed, using fallback content"
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(error_response).encode())
+    
+    def generate_newsletters(self, count=2):
+        """Generate newsletters using Ollama - Always AI/Software + Electronics/DFT."""
+        # Always generate these two specific types
+        topics = [
+            {
+                "topic": "Latest AI and Software Engineering trends and breakthroughs",
+                "category": "AI & Software Engineering"
+            },
+            {
+                "topic": "Electronics hardware development and Design for Testability (DFT) methodologies",
+                "category": "Electronics & DFT"
+            }
+        ]
+        
+        newsletters = []
+        
+        for topic_data in topics:
+            topic = topic_data["topic"]
+            category = topic_data["category"]
+            
+            # Create prompt for newsletter generation
+            prompt = f"""Create a newsletter entry about: {topic}
+
+STRICT FORMAT - respond with EXACTLY this format:
+Title: [write your engaging title here - max 8 words]
+Description: [write your description here - max 120 characters]
+
+Requirements:
+- Make title engaging and specific to recent trends
+- Keep description under 120 characters
+- Focus on practical applications and latest developments
+
+Topic: {topic}"""
+
+            try:
+                # Call Ollama API
+                ollama_response = requests.post(
+                    "http://localhost:11434/api/generate",
+                    json={
+                        "model": "llama3.1:8b",
+                        "prompt": prompt,
+                        "stream": False
+                    },
+                    timeout=15
+                )
+                
+                if ollama_response.status_code == 200:
+                    result = ollama_response.json()
+                    ai_content = result.get('response', '')
+                    print(f"🤖 AI Response for {category}: {ai_content}")
+                    
+                    # Parse AI response
+                    newsletter = self.parse_newsletter_response(ai_content, category)
+                    print(f"📝 Parsed Newsletter: {newsletter}")
+                    newsletters.append(newsletter)
+                else:
+                    print(f"❌ Ollama API error: {ollama_response.status_code}")
+                    # Fallback if Ollama fails
+                    newsletters.append(self.create_fallback_newsletter(category))
+                    
+            except Exception as e:
+                print(f"Error generating newsletter: {e}")
+                newsletters.append(self.create_fallback_newsletter(category))
+        
+        return newsletters
+    
+    def parse_newsletter_response(self, ai_content, category):
+        """Parse AI response into newsletter format."""
+        lines = ai_content.strip().split('\n')
+        
+        title = "Tech Update"
+        description = "Latest technology updates."
+        
+        for line in lines:
+            line = line.strip()
+            # Handle various title formats
+            if any(prefix in line.lower() for prefix in ['title:', '**title:**', 'title']):
+                # Extract title - remove markdown, quotes, and prefixes
+                title_text = line
+                title_text = title_text.replace('**Title:**', '').replace('Title:', '')
+                title_text = title_text.replace('**title:**', '').replace('title:', '')
+                title_text = title_text.replace('"', '').replace("'", '').strip()
+                if title_text and len(title_text) > 3:  # Valid title
+                    title = title_text
+            
+            # Handle various description formats  
+            elif any(prefix in line.lower() for prefix in ['description:', '**description:**', 'description']):
+                # Extract description - remove markdown, quotes, and prefixes
+                desc_text = line
+                desc_text = desc_text.replace('**Description:**', '').replace('Description:', '')
+                desc_text = desc_text.replace('**description:**', '').replace('description:', '')
+                desc_text = desc_text.replace('"', '').replace("'", '').strip()
+                if desc_text and len(desc_text) > 10:  # Valid description
+                    description = desc_text
+        
+        # Fallback: if we didn't find proper title/description, try to extract from content
+        if title == "Tech Update" or description == "Latest technology updates.":
+            content = ai_content.lower()
+            if 'ai' in content or 'software' in content:
+                title = "AI & Software Engineering News"
+                description = "Latest AI and software development innovations and trends."
+            elif 'electronics' in content or 'dft' in content or 'hardware' in content:
+                title = "Electronics & DFT Updates"
+                description = "Hardware design and Design for Testability advancements."
+        
+        return {
+            "title": title,
+            "description": description,
+            "category": category
+        }
+    
+    def create_fallback_newsletter(self, category):
+        """Create fallback newsletter if AI fails."""
+        fallback_map = {
+            "AI & Software Engineering": {
+                "title": "AI & Software Engineering Update",
+                "description": "Latest developments in AI and modern software practices.",
+                "category": "AI & Software Engineering"
+            },
+            "Electronics & DFT": {
+                "title": "Electronics & DFT Innovations",
+                "description": "Hardware design trends and Design for Testability advances.",
+                "category": "Electronics & DFT"
+            }
+        }
+        
+        return fallback_map.get(category, {
+            "title": "Technology Update",
+            "description": "Latest technology trends and innovations.",
+            "category": "Technology"
+        })
+
     def search_documents(self, query):
         """Smart keyword-based document search."""
         query_lower = query.lower()

@@ -1,22 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:intl/intl.dart';
+import '../services/rag_service.dart';
 
-class CommonFeedScreen extends StatelessWidget {
+class CommonFeedScreen extends StatefulWidget {
   const CommonFeedScreen({super.key});
+  
+  @override
+  State<CommonFeedScreen> createState() => _CommonFeedScreenState();
+}
+
+class _CommonFeedScreenState extends State<CommonFeedScreen> {
+  List<Map<String, dynamic>> _newsletters = [];
+  bool _isLoadingNewsletters = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNewsletters();
+  }
+
+  Future<void> _loadNewsletters() async {
+    try {
+      final newsletters = await RagService.generateNewsletters(count: 2);
+      if (mounted) {
+        setState(() {
+          _newsletters = newsletters;
+          _isLoadingNewsletters = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingNewsletters = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _refreshContent() async {
+    setState(() {
+      _isLoadingNewsletters = true;
+    });
+    await _loadNewsletters();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Common Feed'),
+        title: const Text('Common Feed', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          // TODO: Implement refresh functionality
-          await Future.delayed(const Duration(seconds: 1));
-        },
+        onRefresh: _refreshContent,
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
@@ -37,6 +74,26 @@ class CommonFeedScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             
+            // AI Newsletter Section
+            _buildSectionHeader('AI Tech Newsletter', MdiIcons.newspaper),
+            const SizedBox(height: 8),
+            // Dynamic newsletters
+            if (_isLoadingNewsletters)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else
+              ..._newsletters.map((newsletter) => _buildNewsletterCard(
+                    newsletter['title'] ?? 'Tech Update',
+                    newsletter['description'] ?? 'Latest technology updates.',
+                    newsletter['category'] ?? 'Technology',
+                    _getCategoryColor(newsletter['category'] ?? 'Technology'),
+                  )),
+            const SizedBox(height: 24),
+            
             // Announcements Section
             _buildSectionHeader('Announcements', MdiIcons.bullhorn),
             const SizedBox(height: 8),
@@ -51,23 +108,6 @@ class CommonFeedScreen extends StatelessWidget {
               'The office renovation on the 3rd floor will begin next Monday. Please use alternative routes during construction.',
               DateTime.now().subtract(const Duration(days: 1)),
               Colors.purple,
-            ),
-            const SizedBox(height: 24),
-            
-            // AI Newsletter Section
-            _buildSectionHeader('AI Tech Newsletter', MdiIcons.newspaper),
-            const SizedBox(height: 8),
-            _buildNewsletterCard(
-              'Latest in AI Development',
-              'Discover the newest trends in artificial intelligence and machine learning that could impact our industry.',
-              'AI & Technology',
-              Colors.teal,
-            ),
-            _buildNewsletterCard(
-              'Flutter 3.16 Released',
-              'New features and improvements in the latest Flutter release including Material 3 support and performance enhancements.',
-              'Mobile Development',
-              Colors.indigo,
             ),
             const SizedBox(height: 24),
             
@@ -88,6 +128,17 @@ class CommonFeedScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'ai & software engineering':
+        return Colors.teal;
+      case 'electronics & dft':
+        return Colors.deepOrange;
+      default:
+        return Colors.blue; // Fallback color
+    }
   }
 
   Widget _buildSectionHeader(String title, IconData icon) {

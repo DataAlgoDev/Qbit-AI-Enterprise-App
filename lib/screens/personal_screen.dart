@@ -16,12 +16,12 @@ class _PersonalScreenState extends State<PersonalScreen> {
   final List<String> _availableInterests = [
     'AI Engineering',
     'Machine Learning',
+    'DevOps',
     'Mobile Development',
+    'Data Science',
     'Web Development',
     'Cloud Computing',
-    'Data Science',
     'Cybersecurity',
-    'DevOps',
     'UI/UX Design',
     'Project Management',
     'Leadership',
@@ -32,7 +32,7 @@ class _PersonalScreenState extends State<PersonalScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Personal Section'),
+        title: const Text('Personal', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
           IconButton(
@@ -71,13 +71,13 @@ class _PersonalScreenState extends State<PersonalScreen> {
             const SizedBox(height: 24),
             
             // Health Metrics Section
-            _buildSectionHeader('Health & Wellness', MdiIcons.heartPulse),
+            _buildSectionHeader('Health & Finance (Beta)', MdiIcons.heartPulse),
             const SizedBox(height: 12),
             _buildHealthSection(),
             const SizedBox(height: 24),
             
             // Active Tickets Section
-            _buildSectionHeader('Active Tickets', MdiIcons.ticketConfirmation),
+            _buildSectionHeader('Active Tickets (Beta)', MdiIcons.ticketConfirmation),
             const SizedBox(height: 12),
             _buildActiveTicketsSection(),
           ],
@@ -175,6 +175,7 @@ class _PersonalScreenState extends State<PersonalScreen> {
                 return FilterChip(
                   label: Text(interest),
                   selected: isSelected,
+                  showCheckmark: false,
                   onSelected: (selected) {
                     setState(() {
                       if (selected) {
@@ -187,7 +188,6 @@ class _PersonalScreenState extends State<PersonalScreen> {
                     _fetchAIRecommendations();
                   },
                   selectedColor: const Color(0xFF1565C0).withValues(alpha: 0.2),
-                  checkmarkColor: const Color(0xFF1565C0),
                 );
               }).toList(),
             ),

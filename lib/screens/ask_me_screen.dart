@@ -122,7 +122,7 @@ class _AskMeScreenState extends State<AskMeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ask Me'),
+        title: const Text('Ask Me', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
           IconButton(
