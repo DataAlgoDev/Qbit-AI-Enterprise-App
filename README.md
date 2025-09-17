@@ -111,13 +111,10 @@ The app is fully functional for testing the UI and basic interactions:
 
 Here are some screenshots showcasing the app's interface and features:
 
+| Screenshot 1 | Screenshot 2 |
+|:---:|:---:|
+| ![Screenshot 1](screenshots/1.png) | ![Screenshot 2](screenshots/2.png) |
 
-![Screenshot 1](screenshots/1.png)![Screenshot 1](screenshots/2.png)
-
-
-![Screenshot 2](screenshots/3.png)
-![Screenshot 3](screenshots/4.png)
-
-## Contributing
-
-This is the initial version focusing on UI and basic functionality. The AI integration and backend services will be added incrementally based on requirements.
+| Screenshot 3 | Screenshot 4 |
+|:---:|:---:|
+| ![Screenshot 3](screenshots/3.png) | ![Screenshot 4](screenshots/4.png) |
