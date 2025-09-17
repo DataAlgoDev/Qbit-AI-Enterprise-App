@@ -1,21 +1,22 @@
 # Qbit - AI Powered Enterprise App
 
-A full-stack AI-powered application that bridges the gaps between employees and the organization. Built with Flutter frontend and Python RAG (Retrieval Augmented Generation) backend for intelligent document-based conversations.
+A full-stack AI-powered application that bridges the gaps between employees and the organization. Built with Flutter frontend and Python backend using **Ollama Llama 3.1** for intelligent document-based conversations.
 
 ## Architecture
 
 ```
-Flutter App → HTTP API → Python FastAPI → ChromaDB → OpenAI → AI Responses
-     ↓           ↓           ↓            ↓         ↓         ↓
-User Interface → REST → RAG Backend → Vector DB → LLM → Smart Answers + Sources
+Flutter App → HTTP API → Python HTTP Server → Hardcoded Knowledge → Ollama Llama 3.1 → AI Responses
+     ↓           ↓              ↓                    ↓                 ↓               ↓
+User Interface → REST → Simple Backend → Smart Keyword Search → Local LLM → Smart Answers + Sources
 ```
 
 **Components:**
 - 🎯 **Frontend**: Flutter mobile/web app
-- 🐍 **Backend**: Python FastAPI with RAG architecture  
-- 🗃️ **Database**: ChromaDB vector database for document embeddings
-- 🤖 **AI**: OpenAI GPT integration with document context
-- 📄 **Documents**: PDF/DOCX ingestion for company knowledge
+- 🐍 **Backend**: Python HTTP server with intelligent keyword search
+- 🗃️ **Knowledge Base**: Hardcoded company documents (no external database needed)
+- 🤖 **AI**: Ollama Llama 3.1 8B model (runs locally, completely free)
+- 💰 **Cost**: $0 - No API fees, no cloud services, completely self-hosted
+- 📄 **Documents**: Pre-loaded company policies, benefits, IT support info
 
 ## Features
 
@@ -54,56 +55,39 @@ User Interface → REST → RAG Backend → Vector DB → LLM → Smart Answers 
 - Dart SDK
 - Android Studio / VS Code with Flutter extensions
 
-**Backend (Python RAG):**
+**Backend (Python + Ollama):**
 - Python 3.8+
-- OpenAI API Key (from https://platform.openai.com/api-keys)
+- Ollama installed (https://ollama.ai) with Llama 3.1 model
+- No API keys needed! 🎉
 
 ### Installation
 
-#### 🚀 **Quick Start (Recommended)**
+#### 🚀 **Super Simple Setup**
 
-1. **Set up the RAG Backend**:
+1. **Install Ollama and Download Model**:
+   ```bash
+   # Install Ollama from https://ollama.ai
+   ollama pull llama3.1:8b  # Download the 8B model (~4.7GB)
+   ```
+
+2. **Set up Python Backend**:
    ```bash
    cd rag-backend
-   python3 setup.py  # Creates venv, installs deps, creates sample docs
+   pip install requests  # Only dependency needed!
+   python3 ollama_rag.py  # Start backend on http://localhost:8080
    ```
 
-2. **Add your OpenAI API Key**:
-   ```bash
-   nano rag-backend/.env
-   # Replace: OPENAI_API_KEY=your-openai-api-key-here
-   # With: OPENAI_API_KEY=sk-your-actual-key-here
-   ```
-
-3. **Start the Backend**:
-   ```bash
-   cd rag-backend
-   python3 start.py  # Runs on http://localhost:8080
-   ```
-
-4. **Run the Flutter App**:
+3. **Run Flutter App**:
    ```bash
    flutter pub get
    flutter run -d chrome  # For web, or use -d <device> for mobile
    ```
 
-#### 🔧 **Manual Setup**
-
-**Backend Setup:**
-```bash
-cd rag-backend
-python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-pip install -r requirements.txt
-python3 document_ingestion.py --create-samples
-python3 main.py
-```
-
-**Frontend Setup:**
-```bash
-flutter pub get
-flutter run
-```
+#### 💡 **That's it!** 
+- No complex setup scripts
+- No API keys to manage  
+- No vector databases to configure
+- Everything runs locally and free
 
 ### Project Structure
 ```
@@ -120,16 +104,10 @@ Qbit/
 │   │       └── api_service.dart      # HTTP client for backend communication
 │   └── pubspec.yaml                  # Flutter dependencies
 │
-├── 🐍 Python RAG Backend
+├── 🐍 Python Backend (Ollama-Powered)
 │   ├── rag-backend/
-│   │   ├── main.py                   # FastAPI server with RAG logic
-│   │   ├── document_ingestion.py     # PDF/DOCX processing & ChromaDB storage
-│   │   ├── setup.py                  # Automated setup script
-│   │   ├── start.py                  # Server startup script
-│   │   ├── requirements.txt          # Python dependencies
-│   │   ├── .env                      # Environment variables (OpenAI API key)
-│   │   ├── chroma_db/                # Vector database storage
-│   │   └── sample_documents/         # Sample company documents (PDF/DOCX)
+│   │   ├── ollama_rag.py             # Simple HTTP server with Ollama integration
+│   │   └── requirements.txt          # Minimal dependencies (just requests)
 │
 ├── 📸 screenshots/                   # App screenshots
 └── 📋 Documentation
@@ -142,13 +120,13 @@ Qbit/
 
 ✅ **Completed**:
 - 📱 **Flutter Frontend**: Modern Material Design 3 UI with bottom navigation
-- 🤖 **RAG Backend**: Python FastAPI server with OpenAI integration
-- 🗃️ **Vector Database**: ChromaDB for document embeddings and retrieval
-- 📄 **Document Processing**: PDF/DOCX ingestion with automated setup
-- 💬 **Real AI Chat**: Ask Me interface with document-based responses
-- 🎯 **API Integration**: HTTP communication between Flutter and Python backend
-- 📚 **Knowledge Base**: Pre-loaded with sample company documents
-- 🔍 **Vector Search**: Semantic search with source citations
+- 🤖 **Ollama Integration**: Python HTTP server with Llama 3.1 8B model
+- 🗃️ **Smart Knowledge Base**: Hardcoded company documents with intelligent search
+- 🔍 **Keyword Search**: Enhanced search with synonym expansion and relevance scoring  
+- 💬 **Real AI Chat**: Ask Me interface with Ollama-powered responses
+- 🎯 **API Integration**: Simple HTTP REST API between Flutter and Python
+- 📚 **Pre-loaded Content**: Company policies, benefits, IT support, leave policies
+- 💰 **Zero Cost**: Completely free with no external API dependencies
 - 📖 **Common Feed**: Announcements, events, newsletters, celebrations
 - 👤 **Personal Section**: Interests, goals, and AI recommendations
 
@@ -172,40 +150,42 @@ Qbit/
 - **HTTP Client**: Dart HTTP package for API communication
 
 ### Backend Stack  
-- **Framework**: Python FastAPI
-- **AI Integration**: OpenAI GPT-3.5/GPT-4 API
-- **Vector Database**: ChromaDB for embeddings storage
-- **Embeddings**: Sentence Transformers (all-MiniLM-L6-v2)
-- **Document Processing**: PyPDF2 (PDF), python-docx (Word)
-- **API**: RESTful endpoints with automatic documentation
-- **Environment**: Virtual environment with pip dependencies
+- **Server**: Python HTTP server (built-in `http.server`)
+- **AI Integration**: Ollama Llama 3.1 8B (local, no API costs)
+- **Knowledge Base**: Hardcoded dictionary with company documents  
+- **Search**: Smart keyword matching with synonym expansion
+- **Document Storage**: Pre-loaded company policies, benefits, IT info
+- **API**: Simple REST endpoints with CORS support
+- **Dependencies**: Only `requests` library needed (minimal setup)
 
 ### Architecture
-- **Pattern**: RAG (Retrieval Augmented Generation)
+- **Pattern**: Simple RAG with keyword search (no vector embeddings needed)
 - **Communication**: HTTP REST API between Flutter and Python
-- **Deployment**: Local development setup (production-ready)
+- **Deployment**: Completely local (no cloud dependencies)
+- **Cost**: $0 - No external APIs, databases, or services
 
 ## Testing the App
 
 ### 🚀 Complete Testing Flow
 
-1. **Start Backend**: `cd rag-backend && python3 start.py`
-2. **Run Flutter App**: `flutter run -d chrome`
-3. **Test Features**:
+1. **Start Ollama**: `ollama serve` (in separate terminal)
+2. **Start Backend**: `cd rag-backend && python3 ollama_rag.py` 
+3. **Run Flutter App**: `flutter run -d chrome`
+4. **Test Features**:
 
 #### Common Feed Tab
 - Scroll through announcements, events, newsletters, celebrations
 - All content displays with modern Material Design 3 styling
 
-#### Ask Me Tab (RAG-Powered AI)
+#### Ask Me Tab (Ollama-Powered AI)
 Try these sample questions:
-- "What is the leave policy?"  
-- "Tell me about health insurance benefits"
-- "How do I get IT support for my laptop?"
-- "What is the remote work policy?"
-- "Who should I contact for payroll questions?"
+- "What is my total annual leave number?"  
+- "Can I work from home 5 days a week?"
+- "How much does the company pay for health insurance?"
+- "What's the process for getting IT support?"
+- "Do I have any active tickets?"
 
-**Expected Results**: Real AI responses with document source citations
+**Expected Results**: Real Llama 3.1 AI responses with company document sources
 
 #### Personal Section Tab  
 - Select your professional interests
@@ -214,23 +194,23 @@ Try these sample questions:
 
 ## API Endpoints
 
-The Python FastAPI backend provides these endpoints:
+The Python HTTP server provides these simple endpoints:
 
 ### Core Endpoints
-- **GET** `/health` - Backend health check
-- **POST** `/api/chat` - Send messages to RAG AI assistant
-- **GET** `/api/knowledge` - List documents in knowledge base
-- **GET** `/docs` - Interactive API documentation
+- **GET** `/health` - Backend health check and Ollama status
+- **POST** `/api/chat` - Send messages to Ollama AI assistant  
+- **GET** `/api/knowledge` - List hardcoded knowledge base info
+- **GET** `/` - Simple API documentation page
 
 ### Sample API Usage
 ```bash
-# Test backend health
+# Test backend health  
 curl http://localhost:8080/health
 
-# Send chat message  
+# Send chat message to Ollama
 curl -X POST http://localhost:8080/api/chat \
   -H "Content-Type: application/json" \
-  -d '{"message": "What is the leave policy?"}'
+  -d '{"message": "Do I have any active tickets?"}'
 
 # Check knowledge base
 curl http://localhost:8080/api/knowledge
@@ -239,15 +219,10 @@ curl http://localhost:8080/api/knowledge
 ### API Response Format
 ```json
 {
-  "message": "Based on our company policy...",
-  "sources": [
-    {
-      "document": "hr-policy.pdf",
-      "page": 3,
-      "relevance": 0.92
-    }
-  ],
-  "status": "success"
+  "response": "Based on our records, you have one active IT ticket: Ticket #IT-2024-1247 for Outlook Email Sync Issues. It's currently in progress with expected resolution on Sept 18, 2024.",
+  "sources": ["IT_Ticket_System"],
+  "conversation_id": "uuid-here",
+  "ai_model": "Llama 3.1 8B (Ollama)"
 }
 ```
 
@@ -318,4 +293,13 @@ The application demonstrates a production-ready RAG architecture and can serve a
 
 ---
 
-**🎉 Ready to use!** Your Qbit AI-powered enterprise app is now fully functional with both Flutter frontend and Python RAG backend.
+## 🎉 **Why This Architecture Rocks**
+
+✅ **Completely Free**: $0 costs - no API fees, no cloud services  
+✅ **Privacy First**: Everything runs locally, company data never leaves your network  
+✅ **Simple Setup**: Just 3 commands to get running (install Ollama, start backend, run Flutter)  
+✅ **Real AI**: Powered by Llama 3.1 8B - same quality as expensive cloud APIs  
+✅ **No Complexity**: No vector databases, no embeddings, no complex dependencies  
+✅ **Production Ready**: Simple HTTP server that can handle real workloads  
+
+**🎉 Ready to use!** Your Qbit AI-powered enterprise app is now fully functional with Flutter frontend and Ollama-powered Python backend.
