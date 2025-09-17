@@ -1,0 +1,4 @@
+# Qbit RAG Backend - Ollama Powered
+# Minimal dependencies for simple HTTP server + Ollama integration
+
+requests>=2.31.0
