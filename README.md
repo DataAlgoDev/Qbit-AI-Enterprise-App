@@ -111,14 +111,11 @@ The app is fully functional for testing the UI and basic interactions:
 
 Here are some screenshots showcasing the app's interface and features:
 
-### Main Interface
-![App Screenshot 1](screenshots/1.png)
 
-### Recent Screenshots
-![Screenshot 1](screenshots/2.png)
+![Screenshot 1](screenshots/1.png)![Screenshot 1](screenshots/2.png)
+
 
 ![Screenshot 2](screenshots/3.png)
-
 ![Screenshot 3](screenshots/4.png)
 
 ## Contributing
