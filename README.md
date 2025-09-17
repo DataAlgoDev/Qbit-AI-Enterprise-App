@@ -107,6 +107,20 @@ The app is fully functional for testing the UI and basic interactions:
 - Advanced analytics and reporting
 - Integration with existing HR systems
 
+## Screenshots
+
+Here are some screenshots showcasing the app's interface and features:
+
+### Main Interface
+![App Screenshot 1](screenshots/1.png)
+
+### Recent Screenshots
+![Screenshot 1](screenshots/2.png)
+
+![Screenshot 2](screenshots/3.png)
+
+![Screenshot 3](screenshots/4.png)
+
 ## Contributing
 
 This is the initial version focusing on UI and basic functionality. The AI integration and backend services will be added incrementally based on requirements.
