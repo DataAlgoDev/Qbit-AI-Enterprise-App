@@ -10,9 +10,12 @@ class CommonFeedScreen extends StatefulWidget {
   State<CommonFeedScreen> createState() => _CommonFeedScreenState();
 }
 
-class _CommonFeedScreenState extends State<CommonFeedScreen> {
+class _CommonFeedScreenState extends State<CommonFeedScreen> with AutomaticKeepAliveClientMixin {
   List<Map<String, dynamic>> _newsletters = [];
   bool _isLoadingNewsletters = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -47,6 +50,7 @@ class _CommonFeedScreenState extends State<CommonFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Common Feed', style: TextStyle(fontWeight: FontWeight.bold)),

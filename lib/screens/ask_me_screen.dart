@@ -9,12 +9,15 @@ class AskMeScreen extends StatefulWidget {
   State<AskMeScreen> createState() => _AskMeScreenState();
 }
 
-class _AskMeScreenState extends State<AskMeScreen> {
+class _AskMeScreenState extends State<AskMeScreen> with AutomaticKeepAliveClientMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
   
   static const String _welcomeMessage = "Hi! I'm your AI assistant. I can help you with:\n\n• Company policies and benefits\n• Leave policies and procedures\n• Health insurance information\n• IT support requests\n• HR queries\n\nWhat would you like to know?";
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -120,6 +123,7 @@ class _AskMeScreenState extends State<AskMeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ask Me', style: TextStyle(fontWeight: FontWeight.bold)),

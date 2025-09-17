@@ -9,7 +9,7 @@ class PersonalScreen extends StatefulWidget {
   State<PersonalScreen> createState() => _PersonalScreenState();
 }
 
-class _PersonalScreenState extends State<PersonalScreen> {
+class _PersonalScreenState extends State<PersonalScreen> with AutomaticKeepAliveClientMixin {
   final List<String> _selectedInterests = [];
   List<Map<String, dynamic>> _aiRecommendations = [];
   bool _isLoadingRecommendations = false;
@@ -29,7 +29,11 @@ class _PersonalScreenState extends State<PersonalScreen> {
   ];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Personal', style: TextStyle(fontWeight: FontWeight.bold)),
