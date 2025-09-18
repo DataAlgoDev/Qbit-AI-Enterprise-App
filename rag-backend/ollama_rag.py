@@ -23,7 +23,7 @@ KNOWLEDGE_BASE = {
         "category": "health"
     },
     "it_support": {
-        "content": "Email Support: it-support@company.com. Phone Support: Extension 8592996481 for urgent issues. Self-Service Portal: portal.company.com for password resets. Ticket System: Submit non-urgent issues through IT portal. Software Installation: Requires manager approval. VPN Access: Available for remote work with two-factor authentication.",
+        "content": "Email Support: it-support@company.com. Phone Support: Extension 7012424040 for urgent issues. Self-Service Portal: portal.company.com for password resets. Ticket System: Submit non-urgent issues through IT portal. Software Installation: Requires manager approval. VPN Access: Available for remote work with two-factor authentication.",
         "source": "IT_Support_Guide.pdf",
         "category": "it"
     },
