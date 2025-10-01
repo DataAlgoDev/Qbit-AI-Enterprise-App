@@ -2,13 +2,6 @@
 
 A full-stack AI-powered application that bridges the gaps between employees and the organization. Built with Flutter frontend and Python backend using **Ollama Llama 3.1** for intelligent document-based conversations.
 
-## Architecture
-
-```
-Flutter App → HTTP API → Python HTTP Server → Hardcoded Knowledge → Ollama Llama 3.1 → AI Responses
-     ↓           ↓              ↓                    ↓                 ↓               ↓
-User Interface → REST → Simple Backend → Smart Keyword Search → Local LLM → Smart Answers + Sources
-```
 
 **Components:**
 - 🎯 **Frontend**: Flutter mobile/web app
