@@ -76,7 +76,7 @@ A full-stack AI-powered application that bridges the gaps between employees and 
    flutter run -d chrome  # For web, or use -d <device> for mobile
    ```
 
-#### 💡 **That's it!** 
+#### 💡 **Highlights** 
 - No complex setup scripts
 - No API keys to manage  
 - No vector databases to configure
